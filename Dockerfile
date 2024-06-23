@@ -12,6 +12,7 @@ COPY ./conf/cache-ispn-jdbc-ping.xml /opt/keycloak/conf/cache-ispn-jdbc-ping.xml
 #COPY ./conf/quarkus.properties /opt/keycloak/conf/quarkus.properties
 
 # 3rd party themes and extensions
+COPY ./themes /opt/keycloak/themes/
 COPY ./libs/ext/*.jar /opt/keycloak/providers/
 COPY ./libs/target/container*/*.jar /opt/keycloak/providers/
 
@@ -24,9 +25,8 @@ FROM quay.io/phasetwo/keycloak-crdb:25.0.1
 # no longer works after switch to ubi-micro 
 #RUN microdnf update -y && microdnf clean all && rm -rf /var/cache/yum/* && rm -f /tmp/tls-ca-bundle.pem
 
-USER 1000
-
 COPY --from=builder /opt/keycloak/lib/quarkus/ /opt/keycloak/lib/quarkus/
+COPY --from=builder /opt/keycloak/themes/ /opt/keycloak/themes/
 COPY --from=builder /opt/keycloak/providers/ /opt/keycloak/providers/
 COPY --from=builder /opt/keycloak/conf/cache-ispn-jdbc-ping.xml /opt/keycloak/conf/cache-ispn-jdbc-ping.xml
 # custom keycloak.conf
